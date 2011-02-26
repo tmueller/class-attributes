@@ -1,0 +1,89 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 14});
+//plan({noPlan: true});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testrw:{        is:         'rw'                            ,
+                        predicate:  'hasTestRW'                     ,
+                        clearer:    'clearTestRW'                   },
+
+        testunset:{     predicate:  'hasTestUnset'                  ,
+                        clearer:    'clearTestUnset'                },
+
+        testunset_get:{ is:         'ro',
+                        predicate:  'hasTestUnsetGet'                  ,
+                        clearer:    'clearTestUnsetGet'                },
+
+        testdefault:{   predicate:  'hasTestDefault'                ,
+                        clearer:    'clearTestDefault'              ,
+                        'default':  undefined                       },
+
+        testbuilder:{   predicate:  'hasTestBuilder'                ,
+                        clearer:    'clearTestBuilder'              ,
+                        builder:    '_buildTestBuilder'             }
+
+    },
+
+    _buildTestBuilder: function () { return undefined; },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS({testrw: 1});
+ok(t.hasTestRW(),       'predicate works');
+t.clearTestRW();
+
+ok(!t.hasTestRW(),      'clearer works');
+t.setTestrw(undefined);
+
+ok(t.hasTestRW(),       'predicate works after setting undefined value');
+t.clearTestRW();
+
+ok(!t.hasTestRW(),      'clearer works again');
+t.setTestrw(null);
+
+ok(t.hasTestRW(),       'predicate works after setting null value');
+t.clearTestRW();
+
+ok(!t.hasTestRW(),      'clearer works again');
+
+ok(!t.hasTestUnset(),   'uninitialized value returns no predicate');
+
+ok(!t.hasTestUnsetGet(),   'uninitialized value returns no predicate (2)');
+t.getTestunset_get();
+ok(!t.hasTestUnsetGet(),   'uninitialized value has no predicate after getter-access');
+
+t.clearTestUnset();
+ok(!t.hasTestUnset(),   'clearing uninitialized value works');
+
+ok(t.hasTestDefault(),  'default value triggers predicate');
+t.clearTestDefault();
+ok(!t.hasTestDefault(), 'clearing value of default val');
+
+ok(t.hasTestBuilder(),  'builder triggers predicate');
+t.clearTestBuilder();
+ok(!t.hasTestBuilder(), 'builder triggered predicate can be cleared');
+
+</script>
+</pre>
+</body>

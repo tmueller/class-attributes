@@ -1,0 +1,48 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 4});
+//plan({noPlan: true});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testref:{ is: 'ro', 'default': [1]},
+        testbuild:{ is: 'ro', 'builder': '_build_test_build' }
+
+    },
+
+    _build_test_build: function () { return [1];  },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+var t = new TESTCLASS();
+var t2 = new TESTCLASS();
+
+t.testref()[0]      = 0;
+t.testbuild()[0]    = 0;
+
+is(t.testref()[0],      0,      'Arrayrefcontent was changed for first instance (default)');
+is(t.testbuild()[0],    0,      'Arrayrefcontent was changed for first instance (builder)');
+
+is(t2.testref()[0],     1,      'Arrayref is not changed accross instances (from default)');
+is(t2.testbuild()[0],   1,      'Arrayref is not changed accross instances (from builder)');
+
+</script>
+</pre>
+</body>

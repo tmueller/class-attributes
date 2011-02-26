@@ -1,0 +1,87 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 11});
+//plan({noPlan: true});
+
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testrw:{    is: 'rw'   },
+
+        testro:{    is: 'ro'   },
+
+        testbare:{  is: 'bare' },
+
+        testommitted:   {}
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+////////////////////////////////////////////////////////////////////////////////
+t = new TESTCLASS({
+    testrw:         1,
+    testro:         1,
+    testbare:       1,
+    testommitted:   1
+});
+is(t.getTestrw(), 1, 'testrw is 1');
+is(t.getTestro(), 1, 'testro is 1');
+
+try {
+    t.getTestbare();
+    fail('accessing bare accessor should not work');
+} catch (err) {
+    pass('accessing bare accessor throws error: ' + err);
+    ok(err instanceof TypeError, '... and this error is of type TypeError');
+}
+try {
+    t.getTestommitted()
+    fail('accessing ommitted accessor should not work');
+} catch (err) {
+    pass('accessing ommitted accessor throws error: ' + err);
+    ok(err instanceof TypeError, '... and this error is of type TypeError');
+}
+
+t.setTestrw(2)
+is(t.getTestrw(), 2, 'testrw was changed and is 2 now');
+
+try {
+    t.setTestro(2)
+    fail('setting ro accessor should throw error');
+} catch (err) {
+    pass('setting ro accessor throws error: ' + err);
+    ok(err instanceof TypeError, '... and this error is of type TypeError');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+t2 = new TESTCLASS({
+    testrw:         undefined,
+    testro:         undefined,
+    testbare:       undefined,
+    testommitted:   undefined
+});
+
+is(t2.getTestrw(), undefined, 'testrw is undefined');
+is(t2.getTestro(), undefined, 'testro is undefined');
+
+</script>
+</pre>
+</body>

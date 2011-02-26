@@ -1,0 +1,62 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 8});
+//plan({noPlan: true});
+
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        test:{          is:           'rw' },
+
+        testdefault:{   is:           'rw',
+                        'default':    11     },
+
+        testbuild:{     is:           'rw',
+                        'builder':    '_build_testbuild'     },
+
+        testundef:{     is:           'rw' }
+
+    },
+
+    _build_testbuild:  function () { return 12; },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS({
+    test:       1,
+    testdefault:2,
+    testbuild:  3
+});
+is(t.getTest(),        1,          'constructor: test is 1');
+is(t.getTestdefault(), 2,          'constructor: testdefault is 2');
+is(t.getTestbuild(),   3,          'constructor: testbuild is 3');
+is(t.getTestundef(),   undefined,  'constructor: testommitted is undefined');
+
+
+
+t2 = new TESTCLASS({test: 1});
+is(t2.getTest(),       1,          'constructor: test is 1');
+is(t2.getTestdefault(),11,         'default: testdefault is 11');
+is(t2.getTestbuild(),  12,         'builder: testbuild is 12');
+is(t2.getTestundef(),  undefined,  'constructor: testundef is undefined');
+
+</script>
+</pre>
+</body>

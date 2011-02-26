@@ -1,0 +1,104 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+//plan({tests: 3});
+plan({noPlan: true});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// builder + default
+TestClassBuilder = new Class({
+
+    Implements: Accessors,
+
+    has: {
+
+        test:{  is:         'rw',
+                'default':  10,
+                builder:    '_build_test' }
+
+
+    },
+
+    _build_test: function () {
+
+    },
+
+    initialize: function (args) {
+        this.setAccessors(args);
+    }
+
+});
+
+
+try {
+    t = new TestClassBuilder();
+} catch (err) {
+    pass("builder + default: object instantiation threw error: " + err.message);
+    like(err.message, /Only either builder or default is allowed/, '... and the errormessage is right');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// reader + accessorname the same
+TestClassReaderAccessorName = new Class({
+
+    Implements: Accessors,
+
+    has: {
+
+        test:{  is:         'rw',
+                reader:     'test' }
+
+    },
+
+    initialize: function (args) {
+        this.setAccessors(args);
+    }
+
+});
+
+try {
+    t = new TestClassReaderAccessorName();
+} catch (err) {
+    pass("reader + accessor: object instantiation threw error: " + err.message);
+    like(err.message, /reader/, '... and the errormessage is right');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// writer + accessorname the same
+TestClassWriterAccessorName = new Class({
+
+    Implements: Accessors,
+
+    has: {
+
+        test:{  is:     'rw',
+                writer: 'test' }
+
+    },
+
+    initialize: function (args) {
+        this.setAccessors(args);
+    }
+
+});
+
+try {
+    t = new TestClassWriterAccessorName();
+} catch (err) {
+    pass("writer + accessor: object instantiation threw error: " + err.message);
+    like(err.message, /writer/, '... and the errormessage is right');
+}
+
+
+</script>
+</pre>
+</body>

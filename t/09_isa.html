@@ -1,0 +1,218 @@
+<html>
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<p style="display:none;" id="textnode">Textnode</p>
+<p style="display:none;" id="whitespace">
+</p>
+<script type="text/javascript">
+
+plan({tests: 5225 + 19});
+//plan({noPlan: true});
+
+var testobjs = new Hash({
+
+    'element'       : $('test'),
+    'textnode'      : $('textnode').firstChild,
+    'whitespace'    : $('whitespace').firstChild,
+    'arguments'     : (function get_args() { return arguments; })(),
+    'array'         : [],
+    'object'        : {},
+    'string'        : "",
+    'number'        : 3,
+    'date'          : new Date(),
+    'boolean'       : false,
+    'function'      : function () {},
+    'regexp'        : /test/,
+    'class'         : new Class({}),
+    'collection'    : document.getElementsByTagName('p'),
+    'window'        : window,
+    'document'      : document,
+    'event'         : new Event({type:'click'}),
+    'undefined'     : undefined,
+    'null'          : null
+
+});
+
+var TestNoIsa = new Class({
+    Attributes: {
+        testnoisa : { is: 'rw' }
+    },
+    
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+});
+
+testobjs.each(function (value, typename) {
+    var noisa = new TestNoIsa({ testnoisa: value });
+    pass('No Isa defined means Attributes value may be of any type');
+});
+
+// accessor
+testobjs.getKeys().each(function (typename) {
+    var TestClass = new Class({
+        Attributes  : { acc: { is: 'rw', isa: typename } },
+        initialize  : function (accessors) { this.setAttributes(accessors); }
+    });
+
+    testobjs.each(function (testval, testtypename) {
+        if (testtypename == typename) {
+            var t;
+            ok(t = new TestClass({}), 'instantiating works');
+            t.setAcc(testval);
+        } else {
+            try {
+                var t = new TestClass();
+                t.setAcc(testval);
+                fail('Setting wrong type('+ testtypename +') ' +
+                    'to accessor('+ typename +') should throw error.');
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to accessor('+ typename +') throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value ' + err.message + ' => ' + testtypename);
+                like(err.message, new RegExp(typename),     'errormessage contains required typename ' + err.message + ' => ' + typename);
+            }
+        }
+    });
+});
+
+// constructor
+testobjs.getKeys().each(function (typename) {
+    var TestClass = new Class({
+        Attributes  : { acc: { isa: typename } },
+        initialize  : function (accessors) { this.setAttributes(accessors); }
+    });
+
+    testobjs.each(function (testval, testtypename) {
+        if (testtypename == typename) {
+            ok(new TestClass({ acc: testval }), 'instantiating w right type works');
+        } else {
+            try {
+                new TestClass({ acc: testval });
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to constructor('+ typename +') should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to constructor('+ typename +') throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value');
+                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+// writer
+testobjs.getKeys().each(function (typename) {
+    var TestClass = new Class({
+        Attributes  : { acc: { writer: '_set_acc', isa: typename } },
+        initialize  : function (accessors) { this.setAttributes(accessors); }
+    });
+
+    testobjs.each(function (testval, testtypename) {
+        if (testtypename == typename) {
+            var t;
+            ok(t = new TestClass(), 'instantiating works');
+            t._set_acc(testval);
+        } else {
+            try {
+                var t = new TestClass();
+                t._set_acc(testval);
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to writer('+ typename +') throw should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to writer('+ typename +') throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value');
+                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+
+// default
+testobjs.getKeys().each(function (typename) {
+
+    testobjs.each(function (testval, testtypename) {
+
+        var TestClass = new Class({
+            Attributes  : { acc: { 'default': testval, isa: typename } },
+            initialize  : function (accessors) { this.setAttributes(accessors); }
+        });
+        
+        if (testtypename == typename) {
+            ok(new TestClass(), 'instantiating w default works');
+        } else {
+            try {
+                var t = new TestClass();
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to default('+ typename +') should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to default('+ typename +') throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value');
+                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+// builder
+testobjs.getKeys().each(function (typename) {
+
+    testobjs.each(function (testval, testtypename) {
+
+        var TestClass = new Class({
+            Attributes  : { acc: { 'builder': '_build_acc', isa: typename } },
+            _build_acc  : function () { return testval; },
+            initialize  : function (accessors) { this.setAttributes(accessors); }
+        });
+
+        if (testtypename == typename) {
+            ok(new TestClass(), 'instantiating w builder works');
+        } else {
+            try {
+                var t = new TestClass();
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to builder('+ typename +') should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to builder('+ typename +') throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value');
+                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+</script>
+</pre>
+</body>
+</html>

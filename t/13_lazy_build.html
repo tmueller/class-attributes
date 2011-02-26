@@ -1,0 +1,57 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+//plan({tests: 5});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Implements: Accessors,
+
+    has: {
+
+        test_bt:{
+            is:         'rw',
+            lazy_build: true
+        },
+
+        test: {
+            is:         'ro'
+        }
+
+    },
+
+    _build_test_bt: function () { return this.test() + 1; },
+
+    initialize: function (args) {
+        this.setAccessors(args);
+    }
+
+});
+
+
+t = new TESTCLASS({test: 5});
+
+//is(t.test(),          5,     'testval set');
+//is(t.test_bt(),       6,     'lazy builder + accessor RW');
+//ok(t.has_test_bt(),          'predicate set')
+
+t.test_bt(-5);
+//is(t.test_bt(),       -5,    'lazy accessor set');
+
+t.clear_test_bt();
+//is(t.test_bt(),       6,     'lazy builder + accessor cleared resets value');
+
+
+</script>
+</pre>
+</body>

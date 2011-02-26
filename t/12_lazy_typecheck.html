@@ -1,0 +1,147 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<p style="display:none;" id="textnode">Textnode</p>
+<p style="display:none;" id="whitespace">
+</p>
+<script type="text/javascript">
+
+//plan({noPlan: true});
+plan({tests: (18 * 19 * 3 + 1 * 19 * 2) * 2});
+
+var testobjs = new Hash({
+
+    'element'       : $('test'),
+    'textnode'      : $('textnode').firstChild,
+    'whitespace'    : $('whitespace').firstChild,
+    'arguments'     : (function get_args() { return arguments; })(),
+    'array'         : [],
+    'object'        : {},
+    'string'        : "",
+    'number'        : 3,
+    'date'          : new Date(),
+    'boolean'       : false,
+    'function'      : function () {},
+    'regexp'        : /test/,
+    'class'         : new Class({}),
+    'collection'    : document.getElementsByTagName('p'),
+    'window'        : window,
+    'document'      : document,
+    'event'         : new Event({type:'click'}),
+    'undefined'     : undefined,
+    'null'          : null
+
+});
+
+
+// builder, danach clear, danach getter (legt dann builderwert wieder an)
+testobjs.getKeys().each(function (typename) {
+
+    testobjs.each(function (testval, testtypename) {
+
+        var TestClass = new Class({
+            
+            Attributes  : {
+                acc: {
+                    is:         'ro',
+                    isa:        typename,
+                    builder:    '_build_acc',
+                    clearer:    'clearAcc',
+                    lazy:       true
+                }
+            },
+            
+            _build_acc  : function () { return testval; },
+            initialize  : function (accessors) { this.setAttributes(accessors); }
+        });
+        
+        if (testtypename == typename) {
+            var test = new TestClass();
+            ok(test, 'instantiating w builder works');
+            test.clearAcc();
+            
+            // getter should return default / builder - value after clear
+            is(test.getAcc(),  testval, 'accessor returns buildervalue after clear'); 
+        } else {
+            try {
+                var t = new TestClass({acc:testobjs.get(typename)});
+                t.clearAcc();
+                t.getAcc();
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to builder('+ typename +') after clear should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to builder('+ typename +') after clear throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value'); 
+                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+
+// default, danach clear, danach getter (legt dann defaultwert wieder an)
+testobjs.getKeys().each(function (typename) {
+
+    testobjs.each(function (testval, testtypename) {
+
+        var TestClass = new Class({
+            
+            Attributes  : {
+                acc: {
+                    is:         'ro',
+                    isa:        typename,
+                    'default':    testval,
+                    clearer:    'clearAcc',
+                    lazy:       true
+                }
+            },
+            
+            initialize  : function (accessors) { this.setAttributes(accessors); }
+        });
+        
+        if (testtypename == typename) {
+            var test = new TestClass();
+            ok(test, 'instantiating w default works');
+            test.clearAcc();
+            
+            // getter should return default / builder - value after clear
+            is(test.getAcc(),  testval, 'accessor returns defaultvalue after clear'); 
+        } else {
+            try {
+                var t = new TestClass({acc:testobjs.get(typename)});
+                t.clearAcc();
+                t.getAcc();
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to default('+ typename +') after clear should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to default('+ typename +') after clear throws error.'
+                );
+                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value'); 
+                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+
+</script>
+</pre>
+</body>

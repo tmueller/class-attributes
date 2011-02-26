@@ -1,0 +1,53 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 5});
+//plan({noPlan: true});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testrw:{      is: 'ro', required: true },
+        testDefault:{ is: 'ro', required: true, 'default': undefined },
+        testBuilder:{ is: 'ro', required: true, 'builder': '_buildTestDefault' }
+
+    },
+
+    _buildTestDefault: function () { return null; },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+try {
+    t = new TESTCLASS({});
+    fail('accessor was not set via constructor, should have died');
+} catch (err) {
+    pass('died because required remained unset: ' + err.message);
+    like(err.message,   /required/, "... and the errormessage is correct");
+}
+
+
+t2 = new TESTCLASS({ testrw: undefined });
+is(t2.getTestrw(),      undefined,     'constructor + required fullfilled');
+is(t2.getTestDefault(), undefined,     'default     + required fullfilled');
+is(t2.getTestBuilder(), null,          'builder     + required fullfilled');
+
+</script>
+</pre>
+</body>

@@ -1,0 +1,117 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 13});
+//plan({noPlan: true});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testrw:{    reader: 'readTestRW',
+                    writer: 'writeTestRW' }
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS({testrw: 1});
+is(t.readTestRW(), 1, 'reader works');
+t.writeTestRW(2);
+is(t.readTestRW(), 2, 'writer works');
+try {
+    t.getTestrw();
+} catch (err) {
+    pass('accessing bare accessor throws error: ' + err);
+    ok(err instanceof TypeError, '... and this error is of type TypeError');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS2 = new Class({
+
+    Attributes: {
+
+        testrw:{    is:     'rw',
+                    reader: 'readTestRW',
+                    writer: 'writeTestRW' }
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS2({testrw: 1});
+is(t.readTestRW(),   1, 'reader works');
+t.writeTestRW(2);
+is(t.getTestrw(),      2, 'writer works');
+t.setTestrw(3);
+is(t.readTestRW(),   3, 'reader works');
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS3 = new Class({
+
+    Attributes: {
+
+        testdefault:{
+            is:         'rw',
+            reader:     'readTestDefault',
+            writer:     'writeTestDefault',
+            'default':    10
+        },
+                        
+        testbuilder: {
+            is:         'rw',
+            reader:     'readTestBuilder',
+            writer:     'writeTestBuilder',
+            builder:    'build_test'  
+        }
+        
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    },
+    
+    build_test: function () { return 20; }
+
+
+});
+
+
+t = new TESTCLASS3();
+is(t.readTestDefault(),   10, 'reader + default works');
+t.writeTestDefault(2);
+is(t.getTestdefault(),      2, 'writer works');
+t.setTestdefault(3);
+is(t.readTestDefault(),   3, 'reader works');
+
+is(t.readTestBuilder(),   20, 'reader + default works');
+t.writeTestBuilder(2);
+is(t.getTestbuilder(),      2, 'writer works');
+t.setTestbuilder(3);
+is(t.readTestBuilder(),   3, 'reader works');
+
+
+</script>
+</pre>
+</body>

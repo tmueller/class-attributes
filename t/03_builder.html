@@ -1,0 +1,60 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 5});
+//plan({noPlan: true});
+
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testrw:{        is:         'rw',
+                        'builder':  '_build_testrw'         },
+
+        testro:{        is:         'ro',
+                        'builder':  '_build_testro'         },
+
+        testbare:{      is:         'bare',
+                        'builder':  '_build_testbare'       },
+
+        testommitted:{  'builder':  '_build_testommitted'   },
+        
+        testscope:{     is:         'ro',
+                        'builder':  '_build_testscope'      }
+
+    },
+
+    _base_accessornumber:   9,
+    _build_testrw:          function () { return this._base_accessornumber + 1; },
+    _build_testro:          function () { return this._base_accessornumber + 2; },
+    _build_testbare:        function () { return this._base_accessornumber + 3; },
+    _build_testommitted:    function () { return this._base_accessornumber + 4; },
+    _build_testscope:       function () { return this.getTestrw() + 5; },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS();
+is(t.getTestrw(),          10, 'builder: testrw is 10');
+is(t.getTestro(),          11, 'builder: testro is 11');
+is(t.___testbare___,       12, 'builder: testbare is 12');
+is(t.___testommitted___,   13, 'builder: testommitted is 13');
+is(t.getTestscope(),       15, 'builder: scope is correct');
+
+</script>
+</pre>
+</body>

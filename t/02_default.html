@@ -1,0 +1,71 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 9});
+//plan({noPlan: true});
+
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testrw:{    is:             'rw',
+                    'default':      10    },
+
+        testro:{    is:             'ro',
+                    'default':      11     },
+
+        testbare:{  is:             'bare',
+                    'default':      12 },
+
+        testommitted:{ 'default':   13 },
+
+        testnull:{      is:             'rw',
+                        'default':      null    },
+                        
+        test0:{         is:             'rw',
+                        'default':      0    },
+                        
+        testundefined:{ is:             'rw',
+                        'default':      undefined },
+                        
+        testfalse:{     is:             'rw',
+                        'default':      false    },
+                        
+        testempty:{     is:             'rw',
+                        'default':      ""    },
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+t = new TESTCLASS({});
+is(t.getTestrw(),      10, 'testrw is 10');
+is(t.getTestro(),      11, 'testro is 11');
+is(t.___testbare___,     12, 'testbare is 12');
+is(t.___testommitted___, 13, 'testommitted is 13');
+
+// falsy values must be correctly initialized
+ok(t.getTestnull() === null,            'null correctly initialized');
+ok(t.getTest0() === 0,                  '0 correctly initialized');
+ok(t.getTestundefined() === undefined,  'undefined correctly initialized');
+ok(t.getTestfalse() === false,          'false correctly initialized');
+ok(t.getTestempty() === "",             '"" correctly initialized');
+
+
+</script>
+</pre>
+</body>

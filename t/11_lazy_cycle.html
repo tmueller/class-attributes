@@ -1,0 +1,76 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({noPlan: true});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testLazyAccRW:{
+            is:         'rw',
+            lazy:       true,
+            builder:    '_build_testLazyAccRW',
+            clearer:    'cleartestLazyAccRW',
+            predicate:  'hastestLazyAccRW'
+        },
+
+        testLazyAccRWDefault:{
+            is:         'rw',
+            lazy:       true,
+            'default':  6,
+            clearer:    'cleartestLazyAccRWDefault',
+            predicate:  'hastestLazyAccRWDefault'
+        },
+
+        test:{
+            is: 'ro'
+        }
+
+    },
+
+    _build_testLazyAccRW: function () { return this.getTest() + 1; },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS({test: 5});
+
+is(t.getTest(),                5,   'testval set');
+is(t.getTestLazyAccRW(),       6,   'lazy builder + accessor RW');
+t.setTestLazyAccRW(-5);
+is(t.getTestLazyAccRW(),       -5,  'lazy accessor set');
+t.cleartestLazyAccRW();
+ok(!t.hastestLazyAccRW(),           'lazy builder has returns false after clear');
+is(t.getTestLazyAccRW(),       6,   'lazy builder + accessor cleared resets value');
+ok(t.hastestLazyAccRW(),            'lazy builder has returns true after clear');
+
+is(t.getTestLazyAccRWDefault(),       6,     'lazy default + accessor RW');
+t.setTestLazyAccRWDefault(-5);
+is(t.getTestLazyAccRWDefault(),       -5,    'lazy accessor set');
+t.cleartestLazyAccRWDefault();
+ok(!t.hastestLazyAccRWDefault(),     'lazy default has returns false after clear');
+is(t.getTestLazyAccRWDefault(),       6,     'lazy default + accessor cleared resets value');
+ok(t.hastestLazyAccRWDefault(),     'lazy default has returns true after clear');
+
+
+
+</script>
+</pre>
+</body>

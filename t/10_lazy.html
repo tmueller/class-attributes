@@ -1,0 +1,84 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+//plan({noPlan: true});
+plan({tests: 9});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testLazySetByConstructor: {
+            is:         'rw',
+            lazy:       true,
+            builder:    '_build_testLazySetByConstructor',
+            clearer:    'clearTestLazySetByConstructor'
+        },
+        
+        testLazyAccRW:{
+            is:         'rw',
+            lazy:       true,
+            builder:    '_build_testLazyAccRW'
+        },
+
+        testLazyAccRO:{
+            is:         'ro',
+            lazy:       true,
+            builder:    '_build_testLazyAccRO'
+        },
+
+        testLazyReader:{
+            reader:     'getTestLazyReader',
+            lazy:       true,
+            builder:    '_build_testLazyReader'
+        },
+
+        test:{
+            is: 'ro'
+        }
+
+    },
+
+    _build_testLazyAccRW: function () {     return this.getTest() + 1; },
+    _build_testLazyAccRO: function () {     return this.getTest() + 2; },
+    _build_testLazyReader: function () {    return this.getTest() + 3; },
+    _build_testLazySetByConstructor: function () { return this.getTest() + 4; },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS({test: 5, testLazySetByConstructor: 100});
+
+is(t.getTest(),                 5,     'testval set');
+is(t.getTestLazyAccRW(),        6,     'lazy builder + accessor RW');
+is(t.getTestLazyAccRW(),        6,     'lazy builder + accessor RW repeated');
+is(t.getTestLazyAccRO(),        7,     'lazy builder + accessor RO');
+is(t.getTestLazyAccRO(),        7,     'lazy builder + accessor RO repeated');
+is(t.getTestLazyReader(),       8,     'lazy builder + reader ');
+is(t.getTestLazyReader(),       8,     'lazy builder + reader repeated');
+is(t.getTestLazySetByConstructor(), 100, 'lazy was set correctly by constructor' );
+t.clearTestLazySetByConstructor();
+is(t.getTestLazySetByConstructor(), 9, 'lazy was reset and initialized correctly' );
+
+
+//is(t.testBuilder(),         null,  'builder     + required fullfilled');
+
+</script>
+</pre>
+</body>

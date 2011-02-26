@@ -70,7 +70,7 @@ testobjs.getKeys().each(function (typename) {
             test.clearAcc();
             
             // getter should return default / builder - value after clear
-            is(test.getAcc(),  testval, 'accessor returns buildervalue after clear'); 
+            isDeeply(test.getAcc(),  testval, 'accessor returns buildervalue after clear'); 
         } else {
             try {
                 var t = new TestClass({acc:testobjs.get(typename)});
@@ -119,7 +119,7 @@ testobjs.getKeys().each(function (typename) {
             test.clearAcc();
             
             // getter should return default / builder - value after clear
-            is(test.getAcc(),  testval, 'accessor returns defaultvalue after clear'); 
+            isDeeply(test.getAcc(),  testval, 'accessor returns defaultvalue after clear'); 
         } else {
             try {
                 var t = new TestClass({acc:testobjs.get(typename)});

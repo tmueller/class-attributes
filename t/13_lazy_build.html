@@ -4,36 +4,36 @@
     <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
     <script type="text/javascript" src="../../lib/Test/More.js"></script>
 
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
     <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
 </head>
 <body>
 <pre id="test">
 <script type="text/javascript">
 
-//plan({tests: 5});
-
+plan({tests: 5});
 ////////////////////////////////////////////////////////////////////////////////
 TESTCLASS = new Class({
 
-    Implements: Accessors,
+    Attributes: {
 
-    has: {
-
-        test_bt:{
+        testLazybuild:{
             is:         'rw',
-            lazy_build: true
+            lazyBuild:  true
         },
 
         test: {
-            is:         'ro'
-        }
-
+            is:         'ro',
+            required:   true
+        },
+        
     },
 
-    _build_test_bt: function () { return this.test() + 1; },
+    _buildTestLazybuild: function () { return this.getTest() + 1; },
 
     initialize: function (args) {
-        this.setAccessors(args);
+        this.setAttributes(args);
     }
 
 });
@@ -41,15 +41,13 @@ TESTCLASS = new Class({
 
 t = new TESTCLASS({test: 5});
 
-//is(t.test(),          5,     'testval set');
-//is(t.test_bt(),       6,     'lazy builder + accessor RW');
-//ok(t.has_test_bt(),          'predicate set')
+canOK(t,'clearTestLazybuild');
+canOK(t,'hasTestLazybuild');
+is(t.getTestLazybuild(),       6,   'lazy builder is used');
+ok(t.hasTestLazybuild(),            'predicate set')
+t.clearTestLazybuild();
+ok(!t.hasTestLazybuild(),           'clearer used')
 
-t.test_bt(-5);
-//is(t.test_bt(),       -5,    'lazy accessor set');
-
-t.clear_test_bt();
-//is(t.test_bt(),       6,     'lazy builder + accessor cleared resets value');
 
 
 </script>

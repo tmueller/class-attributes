@@ -4,22 +4,25 @@
     <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
     <script type="text/javascript" src="../../lib/Test/More.js"></script>
 
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
     <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
 </head>
 <body>
 <pre id="test">
 <script type="text/javascript">
 
-//plan({tests: 3});
-plan({noPlan: true});
+plan({tests: 3});
+//plan({noPlan: true});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // builder + default
+
+try {
+
 TestClassBuilder = new Class({
 
-    Implements: Accessors,
-
-    has: {
+    Attributes: {
 
         test:{  is:         'rw',
                 'default':  10,
@@ -33,14 +36,12 @@ TestClassBuilder = new Class({
     },
 
     initialize: function (args) {
-        this.setAccessors(args);
+        this.setAttributes(args);
     }
 
 });
 
-
-try {
-    t = new TestClassBuilder();
+    fail('builder + default: object instantiation should throw error on compile');
 } catch (err) {
     pass("builder + default: object instantiation threw error: " + err.message);
     like(err.message, /Only either builder or default is allowed/, '... and the errormessage is right');
@@ -48,25 +49,24 @@ try {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // reader + accessorname the same
+try {
+
 TestClassReaderAccessorName = new Class({
 
-    Implements: Accessors,
-
-    has: {
+    Attributes: {
 
         test:{  is:         'rw',
-                reader:     'test' }
+                reader:     'getTest' }
 
     },
 
     initialize: function (args) {
-        this.setAccessors(args);
+        this.setAttributes(args);
     }
 
 });
 
-try {
-    t = new TestClassReaderAccessorName();
+    fail("reader + accessor: object instantiation should throw error on compile");
 } catch (err) {
     pass("reader + accessor: object instantiation threw error: " + err.message);
     like(err.message, /reader/, '... and the errormessage is right');
@@ -74,25 +74,24 @@ try {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // writer + accessorname the same
+try {
+
 TestClassWriterAccessorName = new Class({
 
-    Implements: Accessors,
-
-    has: {
+    Attributes: {
 
         test:{  is:     'rw',
-                writer: 'test' }
+                writer: 'setTest' }
 
     },
 
     initialize: function (args) {
-        this.setAccessors(args);
+        this.setAttributes(args);
     }
 
 });
 
-try {
-    t = new TestClassWriterAccessorName();
+    fail("writer + accessor: object instantiation should throw error on compile");
 } catch (err) {
     pass("writer + accessor: object instantiation threw error: " + err.message);
     like(err.message, /writer/, '... and the errormessage is right');

@@ -4,6 +4,8 @@
     <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
     <script type="text/javascript" src="../../lib/Test/More.js"></script>
 
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
     <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
 </head>
 <body>
@@ -18,7 +20,7 @@ TESTCLASS = new Class({
 
     Attributes: {
 
-        testref:{ is: 'ro', 'default': [1]},
+        testref:{ is: 'ro', 'default': function () { return [1] } },
         testbuild:{ is: 'ro', 'builder': '_build_test_build' }
 
     },
@@ -34,14 +36,15 @@ TESTCLASS = new Class({
 var t = new TESTCLASS();
 var t2 = new TESTCLASS();
 
-t.testref()[0]      = 0;
-t.testbuild()[0]    = 0;
+t.getTestref()[0]      = 0;
+t.getTestbuild()[0]    = 0;
 
-is(t.testref()[0],      0,      'Arrayrefcontent was changed for first instance (default)');
-is(t.testbuild()[0],    0,      'Arrayrefcontent was changed for first instance (builder)');
+is(t.getTestref()[0],      0,      'Arrayrefcontent was changed for first instance (default)');
+is(t.getTestbuild()[0],    0,      'Arrayrefcontent was changed for first instance (builder)');
 
-is(t2.testref()[0],     1,      'Arrayref is not changed accross instances (from default)');
-is(t2.testbuild()[0],   1,      'Arrayref is not changed accross instances (from builder)');
+is(t2.getTestref()[0],     1,      'Arrayref is not changed accross instances (from default)');
+is(t2.getTestbuild()[0],   1,      'Arrayref is not changed accross instances (from builder)');
+
 
 </script>
 </pre>

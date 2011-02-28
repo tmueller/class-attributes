@@ -155,7 +155,7 @@ testobjs.getKeys().each(function (typename) {
     testobjs.each(function (testval, testtypename) {
 
         var TestClass = new Class({
-            Attributes  : { acc: { 'default': testval, isa: typename } },
+            Attributes  : { acc: { 'default': function () { return testval; }, isa: typename } },
             initialize  : function (accessors) { this.setAttributes(accessors); }
         });
         

@@ -20,25 +20,25 @@ plan({tests: (18 * 19 * 3 + 1 * 19 * 2) * 2});
 
 var testobjs = new Hash({
 
-    'element'       : $('test'),                                        // 
-    'textnode'      : $('textnode').firstChild,                         // 
-    'whitespace'    : $('whitespace').firstChild,                       // 
-    'arguments'     : (function get_args() { return arguments; })(),    // 
-    'array'         : [],                                               // 
-    'object'        : {},                                               // 
-    'string'        : "",                                               // X
-    'number'        : 3,                                                // X
-    'date'          : new Date(),                                       // 
-    'boolean'       : false,                                            // X
-    'function'      : function () {},                                   // 
-    'regexp'        : /test/,                                           // X
-    'class'         : new Class({}),                                    // 
-    'collection'    : document.getElementsByTagName('p'),               //
-    'window'        : window,                                           // 
-    'document'      : document,                                         // 
-    'event'         : new Event({type:'click'}),                        // 
-    'undefined'     : undefined,                                        // X
-    'null'          : null                                              // X   
+    'element'       : $('test'),                                         
+    'textnode'      : $('textnode').firstChild,                          
+    'whitespace'    : $('whitespace').firstChild,                        
+    'arguments'     : (function get_args() { return arguments; })(),     
+    'array'         : [],                                                
+    'object'        : {},                                                
+    'string'        : "",                                               
+    'number'        : 3,                                                
+    'date'          : new Date(),                                        
+    'boolean'       : false,                                            
+    'function'      : function () {},                                    
+    'regexp'        : /test/,                                           
+    'class'         : new Class({}),                                     
+    'collection'    : document.getElementsByTagName('p'),               
+    'window'        : window,                                            
+    'document'      : document,                                          
+    'event'         : new Event({type:'click'}),                         
+    'undefined'     : undefined,                                        
+    'null'          : null                                               
 
 });
 

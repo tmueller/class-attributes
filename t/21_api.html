@@ -1,0 +1,90 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 16 * 2});
+
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        testDefault:{
+            is:             'ro',
+            isa:            'Number|String',
+            required:       true,
+            lazy:           true,
+            'default':      1,
+            documentation:  'MooTools FTW',
+            reader:         '_getTestDefault',
+            writer:         '_setTestDefault',
+            predicate:      'hasTestDefault',
+            clearer:        'clearTestDefault'
+        },
+        
+        testBuilder:{
+            'builder':      '_build_test_builder'
+        }
+
+    },
+
+    _build_test_builder: function () { return [1];  },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+var t = new TESTCLASS();
+var builderAttribute = t.$attributes.get('testBuilder');
+
+
+is(builderAttribute.getMembername()     , '___testBuilder___',  'got membername');
+is(builderAttribute.getGettername()     , 'getTestBuilder',     'got gettername'); 
+is(builderAttribute.getSettername()     , 'setTestBuilder',     'got settername'); 
+is(builderAttribute.getName()           , 'testBuilder',        'got name'); 
+is(builderAttribute.getIs()             , 'bare',               'got is'); 
+is(builderAttribute.getIsa()            , undefined,            'no isa'); 
+ok(!builderAttribute.isRequired()       ,                       'is not required'); 
+ok(!builderAttribute.isLazy()           ,                       'is not lazy'); 
+ok(!builderAttribute.getDefault()       ,                       'no default');     
+is(builderAttribute.getBuilder()        , '_build_test_builder','got builder');     
+is(builderAttribute.getDocumentation()  , undefined,            'no Doc'); 
+is(builderAttribute.getReader()         , undefined,            'no Readername'); 
+is(builderAttribute.getWriter()         , undefined,            'no Writername'); 
+is(builderAttribute.getPredicate()      , undefined,            'no Predicatename'); 
+is(builderAttribute.getClearer()        , undefined,            'no Clearername'); 
+isDeeply(builderAttribute.getAllowedTypes()   , {},             'no allowedtypes');
+
+var defaultAttribute = t.$attributes.get('testDefault');
+is(defaultAttribute.getMembername()     , '___testDefault___',  'got membername');
+is(defaultAttribute.getGettername()     , 'getTestDefault',     'got gettername'); 
+is(defaultAttribute.getSettername()     , 'setTestDefault',     'got settername'); 
+is(defaultAttribute.getName()           , 'testDefault',        'got name'); 
+is(defaultAttribute.getIs()             , 'ro',                 'got is'); 
+is(defaultAttribute.getIsa()            , 'Number|String',      'got isa'); 
+ok(defaultAttribute.isRequired()        ,                       'is required'); 
+ok(defaultAttribute.isLazy()            ,                       'is lazy'); 
+is(defaultAttribute.getDefault()        , 1,                    'got default');     
+ok(!defaultAttribute.getBuilder()        ,                      'no builder');     
+is(defaultAttribute.getDocumentation()  , 'MooTools FTW',       'got Doc'); 
+is(defaultAttribute.getReader()         , '_getTestDefault',    'got Readername'); 
+is(defaultAttribute.getWriter()         , '_setTestDefault',    'got Writername'); 
+is(defaultAttribute.getPredicate()      , 'hasTestDefault',     'got Predicatename'); 
+is(defaultAttribute.getClearer()        , 'clearTestDefault',   'got Clearername'); 
+isDeeply(defaultAttribute.getAllowedTypes()   , {'string':true, 'number':true}, 'got allowedtypes');
+
+</script>
+</pre>
+</body>

@@ -10,9 +10,12 @@
 </head>
 <body>
 <pre id="test">
+<p style="display:none;" id="textnode">Textnode</p>
+<p style="display:none;" id="whitespace">
+</p>
 <script type="text/javascript">
 
-plan({tests: 3});
+plan({tests: 2 * 17 + 7});
 //plan({noPlan: true});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,26 +23,26 @@ plan({tests: 3});
 
 try {
 
-TestClassBuilder = new Class({
-
-    Attributes: {
-
-        test:{  is:         'rw',
-                'default':  10,
-                builder:    '_build_test' }
-
-
-    },
-
-    _build_test: function () {
-
-    },
-
-    initialize: function (args) {
-        this.setAttributes(args);
-    }
-
-});
+    TestClassBuilder = new Class({
+    
+        Attributes: {
+    
+            test:{  is:         'rw',
+                    'default':  10,
+                    builder:    '_build_test' }
+    
+    
+        },
+    
+        _build_test: function () {
+    
+        },
+    
+        initialize: function (args) {
+            this.setAttributes(args);
+        }
+    
+    });
 
     fail('builder + default: object instantiation should throw error on compile');
 } catch (err) {
@@ -51,20 +54,20 @@ TestClassBuilder = new Class({
 // reader + accessorname the same
 try {
 
-TestClassReaderAccessorName = new Class({
-
-    Attributes: {
-
-        test:{  is:         'rw',
-                reader:     'getTest' }
-
-    },
-
-    initialize: function (args) {
-        this.setAttributes(args);
-    }
-
-});
+    TestClassReaderAccessorName = new Class({
+    
+        Attributes: {
+    
+            test:{  is:         'rw',
+                    reader:     'getTest' }
+    
+        },
+    
+        initialize: function (args) {
+            this.setAttributes(args);
+        }
+    
+    });
 
     fail("reader + accessor: object instantiation should throw error on compile");
 } catch (err) {
@@ -76,26 +79,163 @@ TestClassReaderAccessorName = new Class({
 // writer + accessorname the same
 try {
 
-TestClassWriterAccessorName = new Class({
-
-    Attributes: {
-
-        test:{  is:     'rw',
-                writer: 'setTest' }
-
-    },
-
-    initialize: function (args) {
-        this.setAttributes(args);
-    }
-
-});
+    TestClassWriterAccessorName = new Class({
+    
+        Attributes: {
+    
+            test:{  is:     'rw',
+                    writer: 'setTest' }
+    
+        },
+    
+        initialize: function (args) {
+            this.setAttributes(args);
+        }
+    
+    });
 
     fail("writer + accessor: object instantiation should throw error on compile");
 } catch (err) {
     pass("writer + accessor: object instantiation threw error: " + err.message);
     like(err.message, /writer/, '... and the errormessage is right');
 }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// writer + reader the same
+try {
+
+    TestClassWriterAccessorName = new Class({
+    
+        Attributes: {
+    
+            test:{  reader: 'Test',
+                    writer: 'Test' }
+    
+        },
+    
+        initialize: function (args) {
+            this.setAttributes(args);
+        }
+    
+    });
+
+    fail("reader + writer: object instantiation should throw error on compile");
+} catch (err) {
+    pass("reader + writer: object instantiation threw error: " + err.message);
+    like(err.message, /writer.*reader/, '... and the errormessage is right');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// lazy + no default + no builder
+try {
+
+    TestClassWriterAccessorName = new Class({
+    
+        Attributes: {
+    
+            test:{  lazy: true }
+    
+        },
+    
+        initialize: function (args) {
+            this.setAttributes(args);
+        }
+    
+    });
+
+    fail("lazy + no builder + no default: object instantiation should throw error on compile");
+} catch (err) {
+    pass("lazy + no builder + no default: object instantiation threw error: " + err.message);
+    like(err.message, /Lazy Attribute requires default or builder/, '... and the errormessage is right');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// mutable Types passed as default
+var testsfail = new Hash({
+
+    'element'       : $('test'),                                        // 
+    'textnode'      : $('textnode').firstChild,                         // 
+    'whitespace'    : $('whitespace').firstChild,                       // 
+    'arguments'     : (function get_args() { return arguments; })(),    // 
+    'array'         : [],                                               // 
+    'object'        : {},                                               // 
+    'date'          : new Date(),                                       // 
+    'class'         : new Class({}),                                    // 
+    'collection'    : document.getElementsByTagName('p'),               //
+    'window'        : window,                                           // 
+    'document'      : document,                                         // 
+    'event'         : new Event({type:'click'})                        //
+
+});
+
+testsfail.each(function (testobject, typename) {
+
+    try {
+    
+        TestClassWriterAccessorName = new Class({
+        
+            Attributes: {
+        
+                test: {
+                    'default'   : testobject
+                }
+        
+            },
+        
+            initialize: function (args) {
+                this.setAttributes(args);
+            }
+    
+        });
+    
+        fail("mutable object as default " + typename + ": object instantiation should throw error on compile");
+    } catch (err) {
+        pass("mutable object as default " + typename + ": object instantiation threw error: " + err.message);
+        like(err.message, /Please wrap your value with an anonymous function/, '... and the errormessage is right');
+    }
+
+});
+
+var testspass = new Hash({
+
+    'string'        : "",                                               // X
+    'number'        : 3,                                                // X
+    'boolean'       : false,                                            // X
+    'regexp'        : /test/,                                           // X
+    'undefined'     : undefined,                                        // X
+    'null'          : null,                                             // X
+
+    // not among the types, that can be set directly, but function has to work
+    // as a wrapper for mutable objecttypes
+    'function'      : function () {}
+
+
+});
+testspass.each(function (testobject, typename) {
+    try {
+    
+        TestClassWriterAccessorName = new Class({
+        
+            Attributes: {
+        
+                test: {
+                    'default'   : testobject
+                }
+        
+            },
+        
+            initialize: function (args) {
+                this.setAttributes(args);
+            }
+    
+        });
+    
+        pass("immutable object as default " + typename + ": object instantiation works");
+    } catch (err) {
+        fail("immutable object as default " + typename + ": object instantiation should not throw error on compile: " + err.message);
+    }
+});
 
 
 </script>

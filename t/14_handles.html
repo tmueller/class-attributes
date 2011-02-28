@@ -1,0 +1,73 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+//TODO more delegation tests
+plan({tests: 11});
+////////////////////////////////////////////////////////////////////////////////
+TESTCLASS = new Class({
+
+    Attributes: {
+
+        array: {
+            'default':  function () { return [] },
+            handles: {
+                addItem:        'push',
+                getLastItem:    'getLast',
+                eachItem:       'each'
+            }
+        },
+        
+        obj: {
+            'default':  function () { return new Hash({ 0: 'test' }) },
+            handles: {
+                objKeys:        'getKeys',
+                objEach:        'each'
+            }
+        }
+        
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+
+t = new TESTCLASS();
+
+canOK(t,'addItem');
+canOK(t,'getLastItem');
+canOK(t,'eachItem');
+
+t.addItem('test');
+is(t.getLastItem(),     'test',     'reading delegated works');
+t.eachItem(function (element, i) {
+    is(i,               0,          'index is right');
+    is(element,         'test',     'element is right');
+});
+
+canOK(t, 'objKeys');
+canOK(t, 'objEach');
+
+isDeeply(t.objKeys(),     [0]);
+t.objEach(function (element, i) {
+    is(i,               0,          'index is right');
+    is(element,         'test',     'element is right');
+});
+
+
+</script>
+</pre>
+</body>

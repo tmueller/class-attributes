@@ -1,23 +1,23 @@
 *****************************************************************************
 TODO
 *****************************************************************************
-delegates
+DONE delegates
 
-traits
+coercion
 
-nested types
+Lazy + bare ? mmh reader writer? tests
 
 Events-Kompatibilität / different class
-
-coercion ?
 
 inheritance
      
      + sign
+
+nested types
+
+traits
      
 DONE alternate naming / different class
-
-Lazy + bare ? mmh reader writer?
 
 DONE ro inside instance writeable => geht oder geht nicht in moose? => NEIN
 *****************************************************************************

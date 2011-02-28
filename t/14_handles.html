@@ -13,7 +13,8 @@
 <script type="text/javascript">
 
 //TODO more delegation tests
-plan({tests: 11});
+plan({tests: 17});
+
 ////////////////////////////////////////////////////////////////////////////////
 TESTCLASS = new Class({
 
@@ -26,6 +27,11 @@ TESTCLASS = new Class({
                 getLastItem:    'getLast',
                 eachItem:       'each'
             }
+        },
+        
+        array2: {
+            'default':  function () { return [] },
+            handles: ['push', 'getLast', 'each']
         },
         
         obj: {
@@ -57,6 +63,18 @@ t.eachItem(function (element, i) {
     is(i,               0,          'index is right');
     is(element,         'test',     'element is right');
 });
+
+canOK(t,'push');
+canOK(t,'getLast');
+canOK(t,'each');
+
+t.push('test2');
+is(t.getLast(),     'test2',        'reading delegation via array works');
+t.each(function (element, i) {
+    is(i,               0,          'index is right');
+    is(element,         'test2',    'element is right');
+});
+
 
 canOK(t, 'objKeys');
 canOK(t, 'objEach');

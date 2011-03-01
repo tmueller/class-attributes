@@ -11,24 +11,27 @@
 </head>
 <body>
 <script type="text/javascript">
-new Test.Harness.Browser().encoding('utf-8').runTests(
-  '01_accessors.html',
-  '02_default.html',
-  '03_builder.html',
-  '04_builder_default_contructor.html',
-  '05_reader_writer.html',
-  '06_clearer_predicate.html',
-  '07_required.html',
-  '08_trigger.html',
-  '09_isa.html',
-  '10_lazy.html',
-  '11_lazy_cycle.html',
-  '12_lazy_typecheck.html',
-  '13_lazy_build.html',
-  '20_shared_refs.html',
-  '21_api.html',
-  '90_errors.html'
-);
+window.addEvent('domready', function () {
+    new Test.Harness.Browser().encoding('utf-8').runTests(
+      '01_accessors.html',
+      '02_default.html',
+      '03_builder.html',
+      '04_builder_default_contructor.html',
+      '05_reader_writer.html',
+      '06_clearer_predicate.html',
+      '07_required.html',
+      '08_trigger.html',
+      '09_isa.html',
+      '10_lazy.html',
+      '11_lazy_cycle.html',
+      '12_lazy_typecheck.html',
+      '13_lazy_build.html',
+      '14_handles.html',
+      '20_shared_refs.html',
+      '21_api.html',
+      '90_errors.html'
+    );
+});
 </script>
 </body>
 </html>

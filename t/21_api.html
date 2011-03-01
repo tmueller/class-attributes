@@ -12,7 +12,7 @@
 <pre id="test">
 <script type="text/javascript">
 
-plan({tests: 16 * 2});
+plan({tests: 17 * 2});
 
 ////////////////////////////////////////////////////////////////////////////////
 TESTCLASS = new Class({
@@ -29,7 +29,8 @@ TESTCLASS = new Class({
             reader:         '_getTestDefault',
             writer:         '_setTestDefault',
             predicate:      'hasTestDefault',
-            clearer:        'clearTestDefault'
+            clearer:        'clearTestDefault',
+            handles:        ['replace','method2']
         },
         
         testBuilder:{
@@ -65,6 +66,7 @@ is(builderAttribute.getReader()         , undefined,            'no Readername')
 is(builderAttribute.getWriter()         , undefined,            'no Writername'); 
 is(builderAttribute.getPredicate()      , undefined,            'no Predicatename'); 
 is(builderAttribute.getClearer()        , undefined,            'no Clearername'); 
+is(builderAttribute.getHandles()        , undefined,            'no handles');
 isDeeply(builderAttribute.getAllowedTypes()   , {},             'no allowedtypes');
 
 var defaultAttribute = t.$attributes.get('testDefault');
@@ -82,7 +84,13 @@ is(defaultAttribute.getDocumentation()  , 'MooTools FTW',       'got Doc');
 is(defaultAttribute.getReader()         , '_getTestDefault',    'got Readername'); 
 is(defaultAttribute.getWriter()         , '_setTestDefault',    'got Writername'); 
 is(defaultAttribute.getPredicate()      , 'hasTestDefault',     'got Predicatename'); 
-is(defaultAttribute.getClearer()        , 'clearTestDefault',   'got Clearername'); 
+is(defaultAttribute.getClearer()        , 'clearTestDefault',   'got Clearername');
+
+isDeeply(
+    defaultAttribute.getHandles(),
+    { method2: 'method2', replace: 'replace' },
+    'got handles'
+);
 isDeeply(defaultAttribute.getAllowedTypes()   , {'string':true, 'number':true}, 'got allowedtypes');
 
 </script>

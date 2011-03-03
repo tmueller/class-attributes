@@ -24,7 +24,7 @@ DONE ro inside instance writeable => geht oder geht nicht in moose? => NEIN
 DONE: is             =>      'ro', 'rw', 'bare'
 
 DONE:isa             =>      MooTools type => default, builder, writer, accessor, constructor
-     OBJECT TYPES ??? => geht ja no so richtig, JS weiss ja ni bescheid, in welchem Objekt man hängt
+     OBJECT TYPES => instanceOf Checks
 
      'element' - (string) If object is a DOM element node.
      'textnode' - (string) If object is a DOM text node.
@@ -63,7 +63,7 @@ DONE lazy_build      => $bool    same as
 
 DONE default         =>
 
-DONE documentation   => string   NOT USED ANYWAY, can be accessed through object.has.<accessorname>.documentation
+DONE documentation   => string   NOT USED ANYWAY, can be accessed through object.$attribute.<accessorname>.documentation
 
 DONE reader          => string
 
@@ -76,3 +76,50 @@ DONE builder         => string   methodname, return value for attribute
 DONE clearer         => string   set to undefined
 
 DONE trigger         => string   called after accessor was set, $size, $old_size, $was_unset_before
+
+/* TODO: Doku
+    // Class Types
+    Element      true
+    Elements     true
+    TextNode     WRAPPER     TextNode  => String + String => TextNode (Number, Date)
+    Array        true
+    Object       true
+    String       true
+    Number       true
+    Date         true
+    Boolean      true
+    Function     true
+    Regexp       true
+    Class        true
+    Window       true
+    Document     true
+    Event        true
+
+    // Types
+    collection   false       Collection => Elements,   Collection => Array
+    arguments    false       Arguments  => Elements,   Arguments  => Array
+    
+    whitespace   false       special case    /
+    
+    undefined    false       special case
+    null         false       special case
+     
+    Hierarchy
+    ---------
+    
+    Object
+        Element
+        Array
+            Elements
+        String
+        Number
+        Date
+        Boolean
+        Function
+            Class
+        RegExp
+        Window
+        Document
+        Event
+*/
+

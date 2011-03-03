@@ -12,9 +12,58 @@
 <pre id="test">
 <script type="text/javascript">
 
-//TODO more delegation tests
-plan({tests: 17});
+plan({tests: 1});
 
+TestClass = new Class({
+    
+    Attributes: {
+        
+        coerceConstructor: {
+            is:         'ro',
+            isa:        'String',
+            required:   true,
+            coerce:     true
+        },
+        
+        coerceSetter: {
+            is:         'rw',
+            isa:        'String',
+            coerce:     true
+        },
+        
+        coerceWriter: {
+            is:         'ro',
+            isa:        'String',
+            writer:     '_setCoerceWriter',
+            coerce:     true
+        },
+        
+        coerceDefault: {
+            is:         'ro',
+            isa:        'String',
+            coerce:     true,
+            'default':  1
+        },
+        
+        coerceBuilder: {
+            is:         'ro',
+            isa:        'String',
+            coerce:     true,
+            builder:    '_buildCoerceBuilder'
+        }
+        
+    },
+    
+    _buildCoerceBuilder: function () { return 1 },    
+    
+    initialize: function (args) {
+        this.setAttributes(args);   
+    }
+    
+});
+
+t = new TestClass({ coerceConstructor: 1 });
+is(t.getCoerceConstructor(),    "1",    'Coerce in Constructor worked');
 
 </script>
 </pre>

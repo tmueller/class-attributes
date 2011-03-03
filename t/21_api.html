@@ -12,7 +12,7 @@
 <pre id="test">
 <script type="text/javascript">
 
-plan({tests: 17 * 2});
+plan({tests: 18 * 2});
 
 ////////////////////////////////////////////////////////////////////////////////
 TESTCLASS = new Class({
@@ -21,7 +21,7 @@ TESTCLASS = new Class({
 
         testDefault:{
             is:             'ro',
-            isa:            'Number|String',
+            isa:            'Number|String|whitespace',
             required:       true,
             lazy:           true,
             'default':      1,
@@ -68,6 +68,7 @@ is(builderAttribute.getPredicate()      , undefined,            'no Predicatenam
 is(builderAttribute.getClearer()        , undefined,            'no Clearername'); 
 is(builderAttribute.getHandles()        , undefined,            'no handles');
 isDeeply(builderAttribute.getAllowedTypes()   , {},             'no allowedtypes');
+isDeeply(builderAttribute.getAllowedClassTypes()   , [],        'no allowedClasstypes');
 
 var defaultAttribute = t.$attributes.get('testDefault');
 is(defaultAttribute.getMembername()     , '___testDefault___',  'got membername');
@@ -75,7 +76,7 @@ is(defaultAttribute.getGettername()     , 'getTestDefault',     'got gettername'
 is(defaultAttribute.getSettername()     , 'setTestDefault',     'got settername'); 
 is(defaultAttribute.getName()           , 'testDefault',        'got name'); 
 is(defaultAttribute.getIs()             , 'ro',                 'got is'); 
-is(defaultAttribute.getIsa()            , 'Number|String',      'got isa'); 
+is(defaultAttribute.getIsa()            , 'Number|String|whitespace', 'got isa'); 
 ok(defaultAttribute.isRequired()        ,                       'is required'); 
 ok(defaultAttribute.isLazy()            ,                       'is lazy'); 
 is(defaultAttribute.getDefault()        , 1,                    'got default');     
@@ -91,7 +92,8 @@ isDeeply(
     { method2: 'method2', replace: 'replace' },
     'got handles'
 );
-isDeeply(defaultAttribute.getAllowedTypes()   , {'string':true, 'number':true}, 'got allowedtypes');
+isDeeply(defaultAttribute.getAllowedTypes()   , {'whitespace':true}, 'got allowedtypes');
+isDeeply(defaultAttribute.getAllowedClassTypes()   , [Number, String], 'got allowedClasstypes');
 
 </script>
 </pre>

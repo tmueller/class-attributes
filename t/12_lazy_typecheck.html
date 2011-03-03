@@ -1,79 +1,63 @@
+<!DOCTYPE html>
+<html>
 <head>
-    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.js"></script>
-    <script type="text/javascript" src="../../lib/MooTools/More-1.3.0.1.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.1.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.1.1.js"></script>
+
     <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
     <script type="text/javascript" src="../../lib/Test/More.js"></script>
+    <script type="text/javascript" src="lib/typechecks.js"></script>
 
     <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute.js"></script>
     <script type="text/javascript" src="../lib/MooTools/More/Class/Attribute/Lazy.js"></script>
     <script type="text/javascript" src="../lib/MooTools/More/Class/Attributes.js"></script>
 </head>
 <body>
-<pre id="test">
-<p style="display:none;" id="textnode">Textnode</p>
-<p style="display:none;" id="whitespace">
-</p>
 <script type="text/javascript">
 
 //plan({noPlan: true});
-plan({tests: (18 * 19 * 3 + 1 * 19 * 2) * 2});
+plan({tests: 3174});
 
-var testobjs = new Hash({
-
-    'element'       : $('test'),                                         
-    'textnode'      : $('textnode').firstChild,                          
-    'whitespace'    : $('whitespace').firstChild,                        
-    'arguments'     : (function get_args() { return arguments; })(),     
-    'array'         : [],                                                
-    'object'        : {},                                                
-    'string'        : "",                                               
-    'number'        : 3,                                                
-    'date'          : new Date(),                                        
-    'boolean'       : false,                                            
-    'function'      : function () {},                                    
-    'regexp'        : /test/,                                           
-    'class'         : new Class({}),                                     
-    'collection'    : document.getElementsByTagName('p'),               
-    'window'        : window,                                            
-    'document'      : document,                                          
-    'event'         : new Event({type:'click'}),                         
-    'undefined'     : undefined,                                        
-    'null'          : null                                               
-
-});
 
 
 // builder, danach clear, danach getter (legt dann builderwert wieder an)
-testobjs.getKeys().each(function (typename) {
+TYPECHECKS.each(function (value) {
 
-    testobjs.each(function (testval, testtypename) {
+    TYPECHECKS.each(function (testval) {
 
         var TestClass = new Class({
             
             Attributes  : {
                 acc: {
                     is:         'ro',
-                    isa:        typename,
+                    isa:        testval.realtypename || testval.typename,
                     builder:    '_build_acc',
                     clearer:    'clearAcc',
                     lazy:       true
                 }
             },
             
-            _build_acc  : function () { return testval; },
+            _build_acc  : function () { return testval.item; },
             initialize  : function (accessors) { this.setAttributes(accessors); }
         });
         
-        if (testtypename == typename) {
+        if (testval.allowedtypes.contains(value.typename)) {
             var test = new TestClass();
             ok(test, 'instantiating w builder works');
+            
+            // getter should return default / builder - value after clear
+            isDeeply(test.getAcc(),  testval.item, 'accessor returns buildervalue before clear'); 
+
             test.clearAcc();
             
             // getter should return default / builder - value after clear
-            isDeeply(test.getAcc(),  testval, 'accessor returns buildervalue after clear'); 
+            isDeeply(test.getAcc(),  testval.item, 'accessor returns buildervalue after clear'); 
         } else {
+            var testtypename = (testval.realtypename || testval.typename).toLowerCase(),
+                typename     = value.realtypename || value.typename;
+                
             try {
-                var t = new TestClass({acc:testobjs.get(typename)});
+                var t = new TestClass({acc: value.item});
                 t.clearAcc();
                 t.getAcc();
                 fail(
@@ -85,18 +69,73 @@ testobjs.getKeys().each(function (typename) {
                     'Setting wrong type('+ testtypename +') ' +
                     'to builder('+ typename +') after clear throws error.'
                 );
-                like(err.message, new RegExp(testtypename), 'errormessage contains typename of the value'); 
-                like(err.message, new RegExp(typename),     'errormessage contains required typename');
+                like(err.message, new RegExp(testtypename,  'i'), 'errormessage contains typename of the value'); 
+                like(err.message, new RegExp(typename,      'i'),     'errormessage contains required typename');
             }
         }
     });
 });
 
+TYPECHECKS.each(function (value) {
+
+    TYPECHECKS.each(function (testval) {
+
+        var TestClass = new Class({
+            
+            Attributes  : {
+                acc: {
+                    is:         'ro',
+                    isa:        testval.realtypename || testval.typename,
+                    'default':  function () { return testval.item; },
+                    clearer:    'clearAcc',
+                    lazy:       true
+                }
+            },
+            
+            initialize  : function (accessors) { this.setAttributes(accessors); }
+        });
+        
+        if (testval.allowedtypes.contains(value.typename)) {
+            var test = new TestClass();
+            ok(test, 'instantiating w builder works');
+            
+            // getter should return default / builder - value after clear
+            isDeeply(test.getAcc(),  testval.item, 'accessor returns buildervalue before clear'); 
+
+            test.clearAcc();
+            
+            // getter should return default / builder - value after clear
+            isDeeply(test.getAcc(),  testval.item, 'accessor returns buildervalue after clear'); 
+        } else {
+            var testtypename = (testval.realtypename || testval.typename).toLowerCase(),
+                typename     = value.realtypename || value.typename;
+                
+            try {
+                var t = new TestClass({acc: value.item});
+                t.clearAcc();
+                t.getAcc();
+                fail(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to builder('+ typename +') after clear should throw error.'
+                );
+            } catch (err) {
+                pass(
+                    'Setting wrong type('+ testtypename +') ' +
+                    'to builder('+ typename +') after clear throws error.'
+                );
+                like(err.message, new RegExp(testtypename,  'i'), 'errormessage contains typename of the value'); 
+                like(err.message, new RegExp(typename,      'i'),     'errormessage contains required typename');
+            }
+        }
+    });
+});
+
+/*
 
 // default, danach clear, danach getter (legt dann defaultwert wieder an)
-testobjs.getKeys().each(function (typename) {
+TYPECHECKS.getKeys().each(function (typename) {
 
-    testobjs.each(function (testval, testtypename) {
+    TYPECHECKS.each(function (testval, testtypename) {
 
         var TestClass = new Class({
             
@@ -140,8 +179,9 @@ testobjs.getKeys().each(function (typename) {
         }
     });
 });
-
+*/
 
 </script>
 </pre>
 </body>
+</html>

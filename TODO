@@ -78,6 +78,9 @@ DONE clearer         => string   set to undefined
 DONE trigger         => string   called after accessor was set, $size, $old_size, $was_unset_before
 
 /* TODO: Doku
+    IE Element
+    Primitive Types => Object
+
     // Class Types
     Element      true
     Elements     true

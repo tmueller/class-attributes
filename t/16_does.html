@@ -12,7 +12,9 @@
 <pre id="test">
 <script type="text/javascript">
 
-plan({tests: 1});
+// maybe tests for constructor / builder / default / writer
+// but since it is using the same code...
+plan({tests: 35});
 
 FailClass           = new Class({});
 PassClassImplements = new Class({ Implements: Options });
@@ -23,7 +25,7 @@ TestClassImplements = new Class({
     Attributes: {
 
         doesConstructor: {
-            is:         'ro',
+            is:         'rw',
             does:       'Options',
             required:   true
         },
@@ -34,19 +36,19 @@ TestClassImplements = new Class({
         },
 
         doesWriter: {
-            is:         'ro',
+            is:         'rw',
             does:        'Options',
             writer:     '_setdoesWriter'
         },
 
         doesDefault: {
-            is:         'ro',
+            is:         'rw',
             does:       'Options',
             'default':  function () { return new PassClassImplements() }
         },
 
         doesBuilder: {
-            is:         'ro',
+            is:         'rw',
             does:       'Options',
             builder:    '_buildDoesBuilder'
         }
@@ -61,8 +63,217 @@ TestClassImplements = new Class({
 
 });
 
-t = new TestClass({ doesConstructor:  });
-is(t.getDoesConstructor(),    "1",    'does in Constructor worked');
+TestClassManual = new Class({
+
+    Attributes: {
+
+        doesConstructor: {
+            is:         'rw',
+            does:       'Options',
+            required:   true
+        },
+
+        doesSetter: {
+            is:         'rw',
+            does:       'Options',
+        },
+
+        doesWriter: {
+            is:         'rw',
+            does:        'Options',
+            writer:     '_setdoesWriter'
+        },
+
+        doesDefault: {
+            is:         'rw',
+            does:       'Options',
+            'default':  function () { return new PassClassManual() }
+        },
+
+        doesBuilder: {
+            is:         'rw',
+            does:       'Options',
+            builder:    '_buildDoesBuilder'
+        }
+
+    },
+
+    _buildDoesBuilder: function () { return new PassClassManual() },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+TestClassFail = new Class({
+
+    Attributes: {
+
+        doesConstructor: {
+            is:         'rw',
+            does:       'Options',
+            required:   true
+        },
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+TestClassSetterWriter = new Class({
+
+    Attributes: {
+
+        doesSetter: {
+            is:         'rw',
+            does:       'Options',
+        },
+
+        doesWriter: {
+            is:         'rw',
+            does:        'Options',
+            writer:     '_setdoesWriter'
+        },
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+TestClassFailDefault = new Class({
+
+    Attributes: {
+
+        doesDefault: {
+            is:         'rw',
+            does:       'Options',
+            'default':  function () { return new FailClass() }
+        },
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+TestClassFailBuilder = new Class({
+
+    Attributes: {
+
+        doesBuilder: {
+            is:         'rw',
+            does:       'Options',
+            builder:    '_buildDoesBuilder'
+        }
+
+    },
+
+    _buildDoesBuilder: function () { return new FailClass() },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+// passing Tests
+[
+    function () { window.t = new TestClassImplements({ doesConstructor: new PassClassImplements() }); },
+    function () { t.setDoesSetter(new PassClassImplements()); },
+    function () { t._setdoesWriter(new PassClassImplements()); },
+    function () { t.getDoesDefault(); },
+    function () { t.setDoesDefault(new PassClassImplements()); },
+    function () { t.getDoesBuilder(); },
+    function () { t.setDoesBuilder(new PassClassImplements()); },
+
+    function () { t = new TestClassManual({ doesConstructor: new PassClassImplements() }); },
+    function () { t.setDoesSetter(new PassClassImplements()); },
+    function () { t._setdoesWriter(new PassClassImplements()); },
+    function () { t.getDoesDefault(); },
+    function () { t.setDoesDefault(new PassClassImplements()); },
+    function () { t.getDoesBuilder(); },
+    function () { t.setDoesBuilder(new PassClassImplements()); }
+].each(function (testfunc) {
+    try {
+        testfunc();
+        pass('no Error setting PassClassImplements or PassClassManual');
+    } catch(err) {
+        fail('Error setting PassClassImplements or PassClassManual: ' + err.message);
+    }
+});
+
+// failing Tests
+[
+    function () { t2 = new TestClassFail({ doesConstructor: new FailClass() }); },
+    function () { new TestClassSetterWriter().setDoesSetter(new FailClass());   },
+    function () { new TestClassSetterWriter()._setdoesWriter(new FailClass());  },
+    function () { new TestClassFailDefault().getDoesDefault(); },
+    function () { new TestClassFailDefault().setDoesDefault(new FailClass()); },
+    function () { new TestClassFailBuilder().getDoesBuilder(); },
+    function () { new TestClassFailBuilder().setDoesBuilder(new FailClass()); },
+].each(function (testfunc) {
+    try {
+        testfunc();
+        fail('no Error setting FailClass');
+    } catch(err) {
+        pass('Error setting FailClass: ' + err.message);
+        like(err.message, /Doescheck fails for Attribute/, '...and has the correct errormessage');
+    }
+});
+
+StringifyApi = new Class({ toString: function () {} });
+
+// primitive Types
+TestClassPrimitive = new Class({
+
+    Attributes: {
+
+        doesSetter: {
+            is:         'rw',
+            does:       'StringifyApi',
+        }
+
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+var t = new TestClassPrimitive();
+[0, "", false].each(function(primitive) {
+    try {
+        t.setDoesSetter(primitive);
+        pass('Checking Primitve Type worked: ' + typeOf(primitive));
+    } catch(e) {
+        fail(
+            'Checking Primitve Type with Does failed: ' + typeOf(primitive) +
+            '. Message: ' + e.message
+        );
+    }
+});
+
+[null, undefined].each(function(primitive) {
+    try {
+        t.setDoesSetter(primitive);
+        fail('Checking null / undefined should throw error.');
+    } catch(e) {
+        pass('Checking null / primitive throws Error: ' + e.message);
+        like(e.message, /Doescheck fails for Attribute/, '...and has the correct errormessage');
+    }
+});
+
+
 
 </script>
 </pre>

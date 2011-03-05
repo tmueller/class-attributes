@@ -6,14 +6,11 @@
     <script type="text/javascript" src="../../lib/Test/More.js"></script>
     <script type="text/javascript" src="../../lib/Test/Harness.js"></script>
     <script type="text/javascript" src="../../lib/Test/Harness/Browser.js"></script>
-
-    <script type="text/javascript" src="../lib/MooTools/More/Class/Accessors.js"></script>
-
 </head>
 <body>
 <script type="text/javascript">
 window.addEvent('domready', function () {
-    
+
     var tests = [
         '01_accessors.html',
         '02_default.html',
@@ -29,19 +26,20 @@ window.addEvent('domready', function () {
         '12_lazy_typecheck.html',
         '13_lazy_build.html',
         '14_handles.html',
+        '17_inheritance.html',
         '20_shared_refs.html',
         '21_api.html',
         '90_errors.html'
     ];
-    
+
     if (Browser.ie) {
         $(document.body).appendText('Skipping 09_isa.html because we are on IE.', 'top');
         tests.erase('09_isa.html');
     }
-    
+
     var testInstance = new Test.Harness.Browser().encoding('utf-8');
     testInstance.runTests.apply(testInstance, tests);
-    
+
 });
 </script>
 </body>

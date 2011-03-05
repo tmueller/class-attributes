@@ -1,0 +1,69 @@
+<head>
+    <script type="text/javascript" src="../../lib/MooTools/Core-1.3.1.js"></script>
+    <script type="text/javascript" src="../../lib/MooTools/More-1.3.1.1.js"></script>
+    <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
+    <script type="text/javascript" src="../../lib/Test/More.js"></script>
+
+    <script type="text/javascript" src="../lib/MooTools/Class/Attribute.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/Class/Attribute/Lazy.js"></script>
+    <script type="text/javascript" src="../lib/MooTools/Class/Attributes.js"></script>
+</head>
+<body>
+<pre id="test">
+<script type="text/javascript">
+
+plan({tests: 1});
+
+FailClass           = new Class({});
+PassClassImplements = new Class({ Implements: Options });
+PassClassManual     = new Class({ setOptions: function (){} });
+
+TestClassImplements = new Class({
+
+    Attributes: {
+
+        doesConstructor: {
+            is:         'ro',
+            does:       'Options',
+            required:   true
+        },
+
+        doesSetter: {
+            is:         'rw',
+            does:       'Options',
+        },
+
+        doesWriter: {
+            is:         'ro',
+            does:        'Options',
+            writer:     '_setdoesWriter'
+        },
+
+        doesDefault: {
+            is:         'ro',
+            does:       'Options',
+            'default':  function () { return new PassClassImplements() }
+        },
+
+        doesBuilder: {
+            is:         'ro',
+            does:       'Options',
+            builder:    '_buildDoesBuilder'
+        }
+
+    },
+
+    _buildDoesBuilder: function () { return new PassClassImplements() },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+t = new TestClass({ doesConstructor:  });
+is(t.getDoesConstructor(),    "1",    'does in Constructor worked');
+
+</script>
+</pre>
+</body>

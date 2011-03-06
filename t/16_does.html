@@ -4,6 +4,7 @@
     <script type="text/javascript" src="../../lib/Test/Builder.js"></script>
     <script type="text/javascript" src="../../lib/Test/More.js"></script>
 
+    <script type="text/javascript" src="../lib/MooTools/Class/Required.js"></script>
     <script type="text/javascript" src="../lib/MooTools/Class/Attribute.js"></script>
     <script type="text/javascript" src="../lib/MooTools/Class/Attribute/Lazy.js"></script>
     <script type="text/javascript" src="../lib/MooTools/Class/Attributes.js"></script>
@@ -14,7 +15,7 @@
 
 // maybe tests for constructor / builder / default / writer
 // but since it is using the same code...
-plan({tests: 35});
+plan({tests: 39});
 
 FailClass           = new Class({});
 PassClassImplements = new Class({ Implements: Options });
@@ -273,6 +274,79 @@ var t = new TestClassPrimitive();
     }
 });
 
+// Inheritance checks
+var Parent                  = new Class({ method1: function () {} });
+var Child                   = new Class({ Extends: Parent, method2: function () {} });
+var InheritanceApi          = new Class({ method1: function() {}, method2: function () {} });
+var TestClassInheritance    = new Class({
+    
+    Attributes: {
+        
+        testDoes: {
+            does:   'InheritanceApi'
+        }
+        
+    },
+    
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+    
+});
+
+try {
+    new TestClassInheritance({ testDoes: new Child() });
+    pass('Inheritance works as Expected');
+} catch(e) {
+    fail('Inheritance should work with does Checks.');
+}
+
+// Requires Mutator
+var RequiredApi             = new Class({
+    Required: ['requiredMethod'],
+    method: function() {}
+});
+
+var RequiredClassPass = new Class({
+    Implements: RequiredApi,
+    requiredMethod: function () {}
+});
+
+var RequiredClassFail = new Class({
+    Implements: RequiredApi
+});
+
+
+var TestClassRequired = new Class({
+    
+    Attributes: {
+        
+        testDoes: {
+            does:   'RequiredApi'
+        }
+        
+    },
+    
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+    
+});
+
+try {
+    new TestClassRequired({ testDoes: new RequiredClassPass() });
+    pass('Required works as Expected');
+} catch(e) {
+    fail('Required should work with does Checks.');
+}
+
+try {
+    new TestClassRequired({ testDoes: new RequiredClassFail() });
+    fail('Giving unimplemented required Methods to does should throw error.');
+} catch(e) {
+    pass('Unimplemented required Method throws Error: ' + e.message);
+    like(e.message, /Doescheck fails for Attribute/, '...and has the correct errormessage');
+}
 
 
 </script>

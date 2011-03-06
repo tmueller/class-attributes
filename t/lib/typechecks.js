@@ -32,6 +32,7 @@ window.TYPECHECKS = new Hash({
         allowedtypes:
             ('Object Element Elements TextNode Array String Number Date ' +
             'Boolean Function Class RegExp Window Document Event whitespace ' +
+            'StringPrimitive BooleanPrimitive NumberPrimitve ' + 
             'collection arguments').qw()
     },
     
@@ -49,14 +50,14 @@ window.TYPECHECKS = new Hash({
     },
     
     'NumberPrimitve' : {
-        item:           3,
+        item:           0,
         typename:       'NumberPrimitve',
         realtypename:   'Number',
         allowedtypes:   'Number NumberPrimitve'.qw()
     },
     
     'Number'   : {
-        item:           new Number(3),
+        item:           new Number(0),
         typename:       'Number',
         allowedtypes:   'Number NumberPrimitve'.qw()
     },
@@ -69,15 +70,15 @@ window.TYPECHECKS = new Hash({
     
     'BooleanPrimitive' : {
         item:           false,
-        typename:       'BooleanPrimitve',
+        typename:       'BooleanPrimitive',
         realtypename:   'Boolean',
-        allowedtypes:   'Boolean BooleanPrimitve'.qw()
+        allowedtypes:   'Boolean BooleanPrimitive'.qw()
     },
     
     'Boolean'       : {
         item:           new Boolean(false),
         typename:       'Boolean',
-        allowedtypes:   'Boolean BooleanPrimitve'.qw()
+        allowedtypes:   'Boolean BooleanPrimitive'.qw()
     },
     
     'Function'      : {

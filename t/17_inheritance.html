@@ -21,11 +21,11 @@ TestClassParent = new Class({
     Attributes: {
 
         attr1: {
-            is:         'ro',
+            is:         'ro'
         },
 
         attrOverwrite: {
-            is:         'ro',
+            is:         'ro'
         }
 
     },
@@ -43,7 +43,7 @@ TestClass = new Class({
     Attributes: {
 
         attrOverwrite: {
-            is:         'rw',
+            is:         'rw'
         }
 
     },
@@ -54,17 +54,17 @@ TestClass = new Class({
 
 });
 
-parent = new TestClassParent();
-canOK(parent,                   'getAttr1');
-ok(!parent.setAttr1,            'no setter for first Attribute');
-canOK(parent,                   'getAttrOverwrite');
-ok(!parent.setAttrOverwrite,    'no setter for second Attribute');
+parentInstance = new TestClassParent();
+canOK(parentInstance,                   'getAttr1');
+ok(!parentInstance.setAttr1,            'no setter for first Attribute');
+canOK(parentInstance,                   'getAttrOverwrite');
+ok(!parentInstance.setAttrOverwrite,    'no setter for second Attribute');
 
-test = new TestClass();
-canOK(test,         'getAttr1');
-ok(!test.setAttr1,  'no setter for first Attribute');
-canOK(test,         'getAttrOverwrite');
-canOK(test,         'setAttrOverwrite');
+var testInstance = new TestClass();
+canOK(testInstance,         'getAttr1');
+ok(!testInstance.setAttr1,  'no setter for first Attribute');
+canOK(testInstance,         'getAttrOverwrite');
+canOK(testInstance,         'setAttrOverwrite');
 
 
 </script>

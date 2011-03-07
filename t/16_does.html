@@ -33,7 +33,7 @@ TestClassImplements = new Class({
 
         doesSetter: {
             is:         'rw',
-            does:       'Options',
+            does:       'Options'
         },
 
         doesWriter: {
@@ -76,7 +76,7 @@ TestClassManual = new Class({
 
         doesSetter: {
             is:         'rw',
-            does:       'Options',
+            does:       'Options'
         },
 
         doesWriter: {
@@ -115,7 +115,7 @@ TestClassFail = new Class({
             is:         'rw',
             does:       'Options',
             required:   true
-        },
+        }
 
     },
 
@@ -131,14 +131,14 @@ TestClassSetterWriter = new Class({
 
         doesSetter: {
             is:         'rw',
-            does:       'Options',
+            does:       'Options'
         },
 
         doesWriter: {
             is:         'rw',
             does:        'Options',
             writer:     '_setdoesWriter'
-        },
+        }
 
     },
 
@@ -156,7 +156,7 @@ TestClassFailDefault = new Class({
             is:         'rw',
             does:       'Options',
             'default':  function () { return new FailClass() }
-        },
+        }
 
     },
 
@@ -240,7 +240,7 @@ TestClassPrimitive = new Class({
 
         doesSetter: {
             is:         'rw',
-            does:       'StringifyApi',
+            does:       'StringifyApi'
         }
 
     },
@@ -264,15 +264,21 @@ var t = new TestClassPrimitive();
     }
 });
 
-[null, undefined].each(function(primitive) {
-    try {
-        t.setDoesSetter(primitive);
-        fail('Checking null / undefined should throw error.');
-    } catch(e) {
-        pass('Checking null / primitive throws Error: ' + e.message);
-        like(e.message, /Doescheck fails for Attribute/, '...and has the correct errormessage');
-    }
-});
+try {
+    t.setDoesSetter(null);
+    fail('Checking null should throw error.');
+} catch(e) {
+    pass('Checking null primitive throws Error: ' + e.message);
+    like(e.message, /Doescheck fails for Attribute/, '...and has the correct errormessage');
+}
+
+try {
+    t.setDoesSetter(undefined);
+    fail('Checking undefined should throw error.');
+} catch(e) {
+    pass('Checking undefined primitive throws Error: ' + e.message);
+    like(e.message, /Doescheck fails for Attribute/, '...and has the correct errormessage');
+}
 
 // Inheritance checks
 var Parent                  = new Class({ method1: function () {} });

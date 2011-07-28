@@ -15,7 +15,7 @@
 </p>
 <script type="text/javascript">
 
-plan({tests: 2 * 17 + 7});
+plan({tests: 2 * 17 + 13});
 //plan({noPlan: true});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +49,91 @@ try {
     pass("builder + default: object instantiation threw error: " + err.message);
     like(err.message, /Only either builder or default is allowed/, '... and the errormessage is right');
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// narrowing down mutability of accessors
+try {
+
+    var TestClassNarrow = new Class({
+    
+        Attributes: {
+            test:{  is: 'rw' }
+        }     
+    });
+    
+    var TestClassNarrow2 = new Class({
+    
+        Extends: TestClassNarrow,
+    
+        Attributes: {
+            test:{  is: 'ro' }
+        }     
+    });
+
+
+    
+
+    fail('narrowing down mutability of accessors');
+} catch (err) {
+    pass('narrowing down mutability of accessors' + err.message);
+    like(err.message, /Cannot narrow down the accessormutability of accessor "test" from "rw" to "ro"./, '... and the errormessage is right');
+}
+
+try {
+
+    var TestClassNarrow = new Class({
+    
+        Attributes: {
+            test:{  is: 'ro' }
+        }     
+    });
+    
+    var TestClassNarrow2 = new Class({
+    
+        Extends: TestClassNarrow,
+    
+        Attributes: {
+            test:{  is: 'bare' }
+        }     
+    });
+
+
+    
+
+    fail('narrowing down mutability of accessors');
+} catch (err) {
+    pass('narrowing down mutability of accessors' + err.message);
+    like(err.message, /Cannot narrow down the accessormutability of accessor "test" from "ro" to "bare"./, '... and the errormessage is right');
+}
+
+
+try {
+
+    var TestClassNarrow = new Class({
+    
+        Attributes: {
+            test:{  is: 'rw' }
+        }     
+    });
+    
+    var TestClassNarrow2 = new Class({
+    
+        Extends: TestClassNarrow,
+    
+        Attributes: {
+            test:{  is: 'bare' }
+        }     
+    });
+
+
+    
+
+    fail('narrowing down mutability of accessors');
+} catch (err) {
+    pass('narrowing down mutability of accessors' + err.message);
+    like(err.message, /Cannot narrow down the accessormutability of accessor "test" from "rw" to "bare"./, '... and the errormessage is right');
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // reader + accessorname the same

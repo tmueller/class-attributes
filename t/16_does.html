@@ -308,18 +308,19 @@ try {
 }
 
 // Requires Mutator
-var RequiredApi             = new Class({
+var Required = {};
+Required.Api = new Class({
     Required: ['requiredMethod'],
     method: function() {}
 });
 
 var RequiredClassPass = new Class({
-    Implements: RequiredApi,
+    Implements: Required.Api,
     requiredMethod: function () {}
 });
 
 var RequiredClassFail = new Class({
-    Implements: RequiredApi
+    Implements: Required.Api
 });
 
 
@@ -328,7 +329,7 @@ var TestClassRequired = new Class({
     Attributes: {
         
         testDoes: {
-            does:   'RequiredApi'
+            does:   'Required.Api'
         }
         
     },

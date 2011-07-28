@@ -12,7 +12,7 @@
 <pre id="test">
 <script type="text/javascript">
 
-plan({tests: 8});
+plan({tests: 20});
 
 // just a basic test
 // TODO: more inheritance test
@@ -26,6 +26,11 @@ TestClassParent = new Class({
 
         attrOverwrite: {
             is:         'ro'
+        },
+        
+        x: {
+            is:         'ro',
+            required:   1
         }
 
     },
@@ -44,27 +49,70 @@ TestClass = new Class({
 
         attrOverwrite: {
             is:         'rw'
-        }
-
+        },
+        
     },
 
     initialize: function (args) {
         this.setAttributes(args);
     }
-
 });
 
-parentInstance = new TestClassParent();
+TestClassChild = new Class({
+
+    Extends: TestClass,
+
+    Attributes: {
+
+        attr1: {
+            'default':  10
+        },
+        
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+});
+
+parentInstance = new TestClassParent({x: 1});
 canOK(parentInstance,                   'getAttr1');
 ok(!parentInstance.setAttr1,            'no setter for first Attribute');
 canOK(parentInstance,                   'getAttrOverwrite');
 ok(!parentInstance.setAttrOverwrite,    'no setter for second Attribute');
 
-var testInstance = new TestClass();
+canOK(parentInstance,                   'getX');
+is(parentInstance.getX(), 1,            'getter returns, what was set through constructor');
+
+
+var testInstance = new TestClass({x: 2});
 canOK(testInstance,         'getAttr1');
 ok(!testInstance.setAttr1,  'no setter for first Attribute');
 canOK(testInstance,         'getAttrOverwrite');
 canOK(testInstance,         'setAttrOverwrite');
+
+canOK(testInstance,         'getX');
+is(testInstance.getX(), 2,  'getter returns, what was set through constructor for child');
+
+
+try {
+    var testInstanceChild = new TestClassChild();
+    fail('testInstanceChild should have thrown Exception (x is required in constructor)');
+} catch(e) {
+    pass('testInstanceChild threw Exception (x is required in constructor)');
+    // message is tested in another test
+}
+
+
+var testInstanceChild = new TestClassChild({x: 3});
+canOK(testInstanceChild,         'getAttr1');
+ok(!testInstanceChild.setAttr1,  'no setter for first Attribute');
+canOK(testInstanceChild,         'getAttrOverwrite');
+canOK(testInstanceChild,         'setAttrOverwrite');
+
+canOK(testInstanceChild,         'getX');
+is(testInstanceChild.getX(), 3,  'getter returns, what was set through constructor for child');
+is(testInstanceChild.getAttr1(), 10,  'getter returns, new default');
 
 
 </script>

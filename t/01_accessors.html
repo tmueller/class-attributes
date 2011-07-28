@@ -11,7 +11,7 @@
 <pre id="test">
 <script type="text/javascript">
 
-plan({tests: 11});
+plan({tests: 13});
 //plan({noPlan: true});
 
 TESTCLASS = new Class({
@@ -24,7 +24,9 @@ TESTCLASS = new Class({
 
         testbare:{  is: 'bare' },
 
-        testommitted:   {}
+        testommitted:   {},
+        
+        _privateTest: { is: 'rw' }
 
     },
 
@@ -69,6 +71,9 @@ try {
     pass('setting ro accessor throws error: ' + err);
     ok(err instanceof TypeError, '... and this error is of type TypeError');
 }
+
+canOK(t, '_getPrivateTest');
+canOK(t, '_setPrivateTest');
 
 ////////////////////////////////////////////////////////////////////////////////
 t2 = new TESTCLASS({

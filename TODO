@@ -3,19 +3,23 @@ TODO
 *****************************************************************************
 DONE delegates
 
+Traits for Primitive Types [number, string, boolean, ]
+     (inc, dec for Number, toggle for Bool, ...)
+
 coercion
 
 Lazy + bare ? mmh reader writer? tests
 
 Events-Kompatibilität / different class
 
-inheritance
-     
-     + sign
+DONE inheritance
 
 nested types
 
-traits
+different getter/setter Styles (Traits???)
+     * Java (getProp/setProp) is implemented
+     * MooTools uses get('prop') / set('prop', val)
+     * Perl-Style (setter => prop(val) / getter => prop())
      
 DONE alternate naming / different class
 
@@ -76,6 +80,9 @@ DONE builder         => string   methodname, return value for attribute
 DONE clearer         => string   set to undefined
 
 DONE trigger         => string   called after accessor was set, $size, $old_size, $was_unset_before
+
+DONE init_arg
+
 
 /* TODO: Doku
     IE Element

@@ -107,7 +107,6 @@ TYPECHECKS.each(function (value) {
                 t.setAcc(testval.item);
                 pass('Setting right type works');
             } catch(err) {
-                console.log(t.$attributes.get('acc'));
                 fail('Setting right type should not throw exception: ' + err.message);
             }
         } else {

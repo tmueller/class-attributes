@@ -85,6 +85,33 @@ t.objEach(function (element, i) {
     is(element,         'test',     'element is right');
 });
 
+////////////////////////////////////////////////////////////////////////////////
+TestClassImmutable = new Class({
+
+    Attributes: {
+
+        integer: {
+            is:         'ro',   
+            'default':  function () { return 1 },
+            handles:    {
+                incInteger:     'inc'
+            }
+        }
+        
+    },
+
+    initialize: function (args) {
+        this.setAttributes(args);
+    }
+
+});
+
+Number.implement('inc', function () { return this + 1 })
+var tci = new TestClassImmutable({});
+
+is(tci.getInteger(), 1, 'Initial integer is 1');
+tci.incInteger();
+is(tci.getInteger(), 2, 'Integer was incremented');
 
 </script>
 </pre>
